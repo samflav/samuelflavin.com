@@ -62,7 +62,6 @@ class Builder:
                     end = line.rfind('<')
 
                     if start != -1 and end != -1:
-                        inner_text = line[start:end]
-                        dst.write(self.replacements[inner_text])
+                        dst.write(self.replacements[line[start:end]])
                 else:
                     dst.write(line)

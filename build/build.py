@@ -1,5 +1,4 @@
 import os
-import shutil
 from builder import Builder
 
 if __name__ == "__main__":
