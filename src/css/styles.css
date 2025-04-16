@@ -65,20 +65,56 @@ a:hover {
     color: var(--navbar-text) !important;
 }
 
-.navbar .nav-link:hover,
-.navbar .nav-link.active {
+.navbar-nav {
+    padding-left: 0 !important;
+    margin-left: 0 !important;
+}
+
+.navbar .nav-link:hover {
     color: var(--navbar-text-hover) !important;
 }
 
-.theme-toggle-btn {
+.nav-link.active {
+    text-decoration: underline;
+    text-underline-offset: 4px;
+    text-decoration-thickness: 2px;
+}
+
+.navbar-toggler {
+    border-color: white;
+}
+
+.navbar-toggler-icon {
+    --bs-navbar-toggler-icon-bg: url("data:image/svg+xml,%3csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 30 30'%3e%3cpath stroke='rgba%28255, 255, 255%29' stroke-linecap='round' stroke-miterlimit='10' stroke-width='2' d='M4 7h22M4 15h22M4 23h22'/%3e%3c/svg%3e");
+}
+
+.theme-toggle {
     border: 1px solid var(--navbar-text);
     background-color: transparent;
     color: var(--navbar-text);
     transition: background-color 0.2s ease, color 0.2s ease;
+
 }
 
-.theme-toggle-btn:hover {
+.theme-toggle:hover {
     background-color: var(--theme-toggle-hover);
     border-color: var(--theme-toggle-hover);
     transition: background-color .5s ease, border-color .5s ease;
+}
+
+.external-links svg,
+.theme-toggle svg {
+    width: 20px;
+    height: 20px;
+    color: var(--navbar-text) !important;
+    fill: currentColor;
+}
+
+/* Center logo on mobile */
+@media (max-width: 991.98px) {
+    .navbar .navbar-brand {
+        position: absolute;
+        left: 50%;
+        transform: translateX(-50%);
+    }
 }

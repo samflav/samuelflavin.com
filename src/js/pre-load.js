@@ -5,8 +5,8 @@
     document.documentElement.setAttribute('data-bs-theme', theme);
 })();
 
-const sunIconURL = 'https://cdn.samuelflavin.com/sun.svg';
-const moonIconURL = 'https://cdn.samuelflavin.com/moon.svg';
+const sunIconURL = 'https://cdn.samuelflavin.com/svg/sun.svg';
+const moonIconURL = 'https://cdn.samuelflavin.com/svg/moon.svg';
 
 // Start early fetch
 const sunIconPromise = fetch(sunIconURL).then(r => r.text());

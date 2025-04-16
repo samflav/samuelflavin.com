@@ -1,5 +1,6 @@
 import os
 import shutil
+from bs4 import BeautifulSoup
 
 class Builder:
 
@@ -52,16 +53,26 @@ class Builder:
         for file in os.listdir():
             if os.path.isfile(file):
                 with open(file) as f:
-                    self.replacements[file] = f.read()
+                    self.replacements[file] = BeautifulSoup(f.read(), 'html.parser')
 
     def copy_html(self, source, dest):
         with open(source, 'r', encoding='utf-8') as src, open(dest, 'w', encoding='utf-8') as dst:
-            for line in src.readlines():
-                if "class=\"replace\"" in line:
-                    start = line.find('>') + 1
-                    end = line.rfind('<')
+            data = BeautifulSoup(src.read(), 'html.parser')
+            for replacement in data.findAll("meta", class_="replace"):
+                new_val = self.replacements[replacement["content"]]
+                replacement.replace_with(new_val)
 
-                    if start != -1 and end != -1:
-                        dst.write(self.replacements[line[start:end]])
-                else:
-                    dst.write(line)
+            for replacement in data.findAll("div", class_="replace"):
+                new_val = self.replacements[replacement.string]
+                replacement.replace_with(new_val)
+
+            dst.writelines(data.prettify())
+            # for line in src.readlines():
+            #     if "class=\"replace\"" in line:
+            #         start = line.find('>') + 1
+            #         end = line.rfind('<')
+            #
+            #         if start != -1 and end != -1:
+            #             dst.write(self.replacements[line[start:end]])
+            #     else:
+            #         dst.write(line)
