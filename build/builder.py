@@ -1,16 +1,21 @@
 import os
 import shutil
+
 from bs4 import BeautifulSoup
+import requests
 
 class Builder:
 
     src = ""
     target = ""
+    base_site = ""
 
     handlers = {}
     replacements = {}
 
-    def __init__(self, wd):
+    def __init__(self, wd, base_site):
+        self.base_site = base_site
+
         self.src = os.path.join(wd, 'src')
         self.target = os.path.join(wd, 'target')
 
@@ -59,14 +64,15 @@ class Builder:
         with open(source, 'r', encoding='utf-8') as src, open(dest, 'w', encoding='utf-8') as dst:
             data = BeautifulSoup(src.read(), 'html.parser')
             for replacement in data.findAll("meta", class_="replace"):
-                new_val = self.replacements[replacement["content"]]
-                replacement.replace_with(new_val)
+                file = replacement["content"]
+                replacement.replace_with(self.get_replacement(file))
 
             for replacement in data.findAll("div", class_="replace"):
-                new_val = self.replacements[replacement.string]
-                replacement.replace_with(new_val)
+                file = replacement.string
+                replacement.replace_with(self.get_replacement(file))
 
-            dst.writelines(data.prettify())
+            dst.writelines(str(data))
+
             # for line in src.readlines():
             #     if "class=\"replace\"" in line:
             #         start = line.find('>') + 1
@@ -76,3 +82,18 @@ class Builder:
             #             dst.write(self.replacements[line[start:end]])
             #     else:
             #         dst.write(line)
+
+
+    def get_replacement(self, file):
+        if file.startswith("https://"):
+            if file in self.replacements.keys():
+                soup = self.replacements[file]
+            else:
+                soup = BeautifulSoup(requests.get(file).text, 'html.parser')
+                self.replacements[file] = soup
+        else:
+            soup = self.replacements[file]
+
+        return soup
+
+    #TODO(generate cards dynamically)
