@@ -1,0 +1,23 @@
+.card-link {
+    transition: transform 0.25s ease, box-shadow 0.25s ease;
+    color: var(--text-color);
+    border: 1px solid var(--border-color);
+    border-radius: 0.5rem;
+}
+
+.card-link:hover {
+    transform: translateY(-6px) scale(1.02);
+    box-shadow: 0 10px 24px rgba(0, 0, 0, 0.12);
+    text-decoration: none;
+}
+
+.card-link:hover .link-indicator {
+    color: var(--link-hover-color);
+    text-decoration: underline;
+}
+
+.link-indicator {
+    font-weight: 600;
+    color: var(--link-color);
+    transition: color 0.2s ease;
+}

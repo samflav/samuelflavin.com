@@ -73,16 +73,6 @@ class Builder:
 
             dst.writelines(str(data))
 
-            # for line in src.readlines():
-            #     if "class=\"replace\"" in line:
-            #         start = line.find('>') + 1
-            #         end = line.rfind('<')
-            #
-            #         if start != -1 and end != -1:
-            #             dst.write(self.replacements[line[start:end]])
-            #     else:
-            #         dst.write(line)
-
 
     def get_replacement(self, file):
         if file.startswith("https://"):
@@ -94,6 +84,15 @@ class Builder:
         else:
             soup = self.replacements[file]
 
+        self.clean_links(soup)
         return soup
 
+    def clean_links(self, soup):
+        base_url = soup.find("base")["href"]
+
+        for link in soup.findAll("a"):
+            if link["href"].startswith(base_url):
+                link["href"] = link["href"][len(base_url):]
+
     #TODO(generate cards dynamically)
+    #TODO(generate nav links)
