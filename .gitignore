@@ -2,3 +2,5 @@ venv/*
 target/*
 .idea/*
 assets/*
+build/hidden.py
+build/__pycache__/*

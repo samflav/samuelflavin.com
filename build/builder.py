@@ -88,7 +88,12 @@ class Builder:
         return soup
 
     def clean_links(self, soup):
-        base_url = soup.find("base")["href"]
+        try:
+            base_url = soup.find("base")["href"]
+
+        except:
+            base_url = self.base_site
+
 
         for link in soup.findAll("a"):
             if link["href"].startswith(base_url):
