@@ -6,7 +6,7 @@ from builder import Builder
 from hidden import KEY_PATH
 
 BASE_SITE = "https://samuelflavin.com"
-DEPLOY = sys.argv[1]
+DEPLOY = sys.argv[1] == 'True'
 
 #local dir / remote dir / follow dirs / enabled / other site
 DEPLOY_ORDER = [
