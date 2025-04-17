@@ -4,3 +4,4 @@ target/*
 assets/*
 build/hidden.py
 build/__pycache__/*
+build/__pycache__/builder.cpython-312.pyc
