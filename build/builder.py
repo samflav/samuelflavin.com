@@ -71,20 +71,23 @@ class Builder:
                 file = replacement.string
                 replacement.replace_with(self.get_replacement(file))
 
+            self.clean_links(data)
             dst.writelines(str(data))
 
 
     def get_replacement(self, file):
+        #TODO(caching)
         if file.startswith("https://"):
-            if file in self.replacements.keys():
-                soup = self.replacements[file]
-            else:
-                soup = BeautifulSoup(requests.get(file).text, 'html.parser')
-                self.replacements[file] = soup
+            # if file in self.replacements.keys():
+            #     soup = self.replacements[file]
+            # else:
+            #     soup = BeautifulSoup(requests.get(file).text, 'html.parser')
+            #     self.replacements[file] = soup
+            soup = BeautifulSoup(requests.get(file).text, 'html.parser')
+            self.replacements[file] = soup
         else:
             soup = self.replacements[file]
 
-        self.clean_links(soup)
         return soup
 
     def clean_links(self, soup):

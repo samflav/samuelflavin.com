@@ -8,9 +8,9 @@ BASE_SITE = "https://samuelflavin.com"
 DEPLOY = True
 
 #local dir / remote dir / follow dirs / enabled / other site
-
 DEPLOY_ORDER = [
-    ("./target/", "/var/www/home/", False, True, None)
+    ("./target/", "/var/www/home/", False, True, None),
+    ("./target/pt/", "/var/www/pt/", True, True, None)
 ]
 
 
@@ -22,6 +22,7 @@ def sftp_files(src, target, sftp):
 
 def sftp_walk(src, target, sftp):
     for root, dirs, files in os.walk(src):
+        rel_path = os.path.relpath(root, src)
         for directory in dirs:
             try:
                 sftp.mkdir(os.path.join(target, directory))
@@ -29,7 +30,7 @@ def sftp_walk(src, target, sftp):
                 pass
 
         for file in files:
-            sftp.put(file, os.path.join(target, file))
+            sftp.put(os.path.join(root, file), os.path.join(target, str(rel_path), file).replace("\\","/"))
 
 
 
