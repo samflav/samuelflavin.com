@@ -1,18 +1,19 @@
 import os
+import sys
 import paramiko
 
 from builder import Builder
 from hidden import KEY_PATH
 
 BASE_SITE = "https://samuelflavin.com"
-DEPLOY = True
+DEPLOY = sys.argv[1]
 
 #local dir / remote dir / follow dirs / enabled / other site
 DEPLOY_ORDER = [
+    ("./src/partial_html", "/var/www/assets/html_part/", True, True, None),
     ("./target/", "/var/www/home/", False, True, None),
     ("./target/pt/", "/var/www/pt/", True, True, None)
 ]
-
 
 def sftp_files(src, target, sftp):
     for item in os.listdir(src):
@@ -31,8 +32,6 @@ def sftp_walk(src, target, sftp):
 
         for file in files:
             sftp.put(os.path.join(root, file), os.path.join(target, str(rel_path), file).replace("\\","/"))
-
-
 
 def deploy():
     ssh = paramiko.SSHClient()

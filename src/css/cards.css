@@ -21,3 +21,9 @@
     color: var(--link-color);
     transition: color 0.2s ease;
 }
+
+.card-img-top {
+    height: 200px;             /* Or any desired uniform height */
+    object-fit: cover;
+    object-position: center;
+}
