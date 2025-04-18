@@ -8,61 +8,6 @@
     <meta class="replace" content="https://assets.samuelflavin.com/html_part/head.html">
     <link href="css/zynnamon.css" rel="stylesheet">
 
-    <style>
-        body {
-            background-color: #140b0b;
-            color: #fceee7;
-            font-family: 'JetBrains Mono', monospace;
-        }
-
-        /* Nav override — NOT sticky */
-        .navbar {
-            background-color: #140b0b !important;
-            color: #fceee7;
-            box-shadow: 0 3px 10px rgba(255, 90, 54, 0.3);
-            position: relative; /* no sticky */
-            z-index: 999;
-        }
-
-        .navbar .nav-link,
-        .navbar .navbar-brand {
-            color: #fceee7 !important;
-        }
-
-        .navbar .nav-link:hover,
-        .navbar .navbar-brand:hover {
-            color: #ffa88f !important;
-        }
-
-        h1.glow-title {
-            font-size: 3rem;
-            text-align: center;
-            color: #ff5a36;
-            text-shadow: 0 0 10px #ff5a36, 0 0 30px #ff7e59;
-            margin-top: 2rem;
-            margin-bottom: 1.5rem;
-            text-transform: uppercase;
-            letter-spacing: 2px;
-        }
-
-        .about-text {
-            max-width: 750px;
-            margin: 0 auto;
-            font-size: 1.125rem;
-            line-height: 1.7;
-            color: #fceee7;
-            padding: 0 1rem;
-        }
-
-        .idol-img {
-            max-width: 500px;
-            width: 90%;
-            display: block;
-            margin: 2rem auto;
-            border-radius: 0.5rem;
-            box-shadow: 0 0 50px rgba(255, 90, 54, 0.3);
-        }
-    </style>
 </head>
 <body>
 
@@ -73,6 +18,15 @@
     <h1 class="glow-title">Zynnamon</h1>
 
     <img src="https://cdn.samuelflavin.com/images/zynnamon.jpg" alt="Zynnamon Rebar Idol" class="idol-img">
+
+    <div class="container text-center my-5">
+        <h2 class="text-uppercase mb-4" style="color: #ff5a36; text-shadow: 0 0 10px #ff5a36;">Zyn Tracker</h2>
+        <div id="tracker-count" class="display-4 fw-bold mb-3">0</div>
+        <div class="d-flex justify-content-center gap-3">
+            <button class="btn btn-outline-light" onclick="addZyn()">+ Zyn</button>
+            <button class="btn btn-outline-warning" onclick="resetZyn()">Reset Ritual</button>
+        </div>
+    </div>
 
     <section class="about-text my-5">
         <p>
@@ -87,7 +41,7 @@
     </section>
 </main>
 
-
+<script src="js/scripts.js"></script>
 <div class="replace">https://assets.samuelflavin.com/html_part/footer.html</div>
 
 </body>

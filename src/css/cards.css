@@ -27,3 +27,22 @@
     object-fit: cover;
     object-position: center;
 }
+
+/* Zynnamon-specific card theme */
+.card-link.zyn-card {
+    background-color: #1a0f0f;
+    border-color: #ff5a36;
+}
+
+.zyn-card .card-title {
+    color: #ff5a36;
+    text-transform: uppercase;
+}
+
+.zyn-card .card-text {
+    color: #fceee7;
+}
+
+.zyn-card .card-img-top {
+    object-position: top !important;
+}

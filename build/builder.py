@@ -1,7 +1,6 @@
 import os
 import shutil
-from cgitb import handler
-from email.policy import default
+import copy
 
 from bs4 import BeautifulSoup
 import requests
@@ -47,22 +46,23 @@ class Builder:
             for root, dirs, files in os.walk(src_dir):
                 rel_path = os.path.relpath(root, src_dir)
                 for directory in dirs:
-                    os.makedirs(os.path.join(target_dir, directory))
+                    os.makedirs(os.path.join(target_dir, directory), exist_ok=True)
 
                 for file in files:
                     if file.endswith(".html"):
-                        self.copy_html(file, os.path.join(target_dir, file))
+                        self.copy_html(os.path.join(root, file), os.path.join(target_dir, str(rel_path), file))
                     else:
-                        shutil.copy2(str(os.path.join(root, file)), str(os.path.join(target_dir, file)))
+                        shutil.copy2(str(os.path.join(root, file)), str(os.path.join(target_dir, str(rel_path), file)))
         else:
+            os.makedirs(os.path.join(target_dir), exist_ok=True)
             for file in os.listdir(src_dir):
-                if not os.path.isfile(file):
+                if not os.path.isfile(os.path.join(src_dir, file)):
                     continue
 
                 if file.endswith(".html"):
-                    self.copy_html(file, os.path.join(target_dir, file))
+                    self.copy_html(os.path.join(src_dir, file), os.path.join(target_dir, file))
                 else:
-                    shutil.copy2(file, os.path.join(target_dir, file))
+                    shutil.copy2(os.path.join(src_dir, file), os.path.join(target_dir, file))
 
 
     def partial_html(self, src_dir, target_dir="", follow_dirs=False):
@@ -88,19 +88,16 @@ class Builder:
 
 
     def get_replacement(self, file):
-        #TODO(caching)
         if file.startswith("https://"):
-            # if file in self.replacements.keys():
-            #     soup = self.replacements[file]
-            # else:
-            #     soup = BeautifulSoup(requests.get(file).text, 'html.parser')
-            #     self.replacements[file] = soup
-            soup = BeautifulSoup(requests.get(file).text, 'html.parser')
-            self.replacements[file] = soup
+            if file in self.replacements.keys():
+                soup = self.replacements[file]
+            else:
+                soup = BeautifulSoup(requests.get(file).text, 'html.parser')
+                self.replacements[file] = soup
         else:
             soup = self.replacements[file]
 
-        return soup
+        return copy.copy(soup)
 
 
     def clean_links(self, soup):

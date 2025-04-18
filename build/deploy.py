@@ -13,7 +13,7 @@ def sftp_walk(src, target, sftp):
         rel_path = os.path.relpath(root, src)
         for directory in dirs:
             try:
-                sftp.mkdir(os.path.join(target, directory))
+                sftp.mkdir(os.path.join(target, directory).replace("\\","/"))
             except IOError:
                 pass
 
