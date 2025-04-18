@@ -7,59 +7,70 @@ import requests
 
 class Builder:
 
-    src = ""
-    target = ""
     base_site = ""
+
+    build_order = []
 
     handlers = {}
     replacements = {}
 
-    def __init__(self, wd, base_site):
+    def __init__(self, wd, base_site, build_order):
         self.base_site = base_site
 
         self.src = os.path.join(wd, 'src')
         self.target = os.path.join(wd, 'target')
 
+        self.build_order = build_order
+
         os.makedirs(self.target, exist_ok=True)
 
         self.handlers = {
-            'partial_html': self.partial_html
+            './src/partial_html': self.partial_html
         }
 
+
     def build(self):
-        for key, value in self.handlers.items():
-            if os.path.exists(os.path.join(self.src, key)):
-                os.chdir(os.path.join(self.src, key))
-                value()
-
-        os.chdir(self.src)
-
-        for root, dirs, files in os.walk(self.src):
-            rel_path = os.path.relpath(root, self.src)
-
-            if rel_path in self.handlers.keys():
+        for row in self.build_order:
+            build_target = Builder.parse_build_order(row)
+            if not build_target["enabled"]:
                 continue
 
-            os.chdir(os.path.join(root))
-            self.default(os.path.join(self.target, rel_path))
-
-
-    def default(self, target_dir):
-        os.makedirs(target_dir, exist_ok=True)
-        for file in os.listdir():
-            if not os.path.isfile(file):
-                continue
-
-            if file.endswith(".html"):
-                self.copy_html(file, os.path.join(target_dir, file))
+            if build_target["source_dir"] in self.handlers.keys():
+                self.handlers[build_target["source_dir"]](build_target["source_dir"], build_target["target_dir"], build_target["follow_dirs"])
             else:
-                shutil.copy2(file, os.path.join(target_dir, file))
+                self.default(build_target["source_dir"], build_target["target_dir"], build_target["follow_dirs"])
 
-    def partial_html(self, target_dir=""):
-        for file in os.listdir():
+
+    def default(self, src_dir, target_dir, follow_dirs):
+        if follow_dirs:
+            for root, dirs, files in os.walk(src_dir):
+                rel_path = os.path.relpath(root, src_dir)
+                for directory in dirs:
+                    os.makedirs(os.path.join(target_dir, directory), exist_ok=True)
+
+                for file in files:
+                    if file.endswith(".html"):
+                        self.copy_html(os.path.join(root, file), os.path.join(target_dir, str(rel_path), file))
+                    else:
+                        shutil.copy2(str(os.path.join(root, file)), str(os.path.join(target_dir, str(rel_path), file)))
+        else:
+            os.makedirs(os.path.join(target_dir), exist_ok=True)
+            for file in os.listdir(src_dir):
+                if not os.path.isfile(os.path.join(src_dir, file)):
+                    continue
+
+                if file.endswith(".html"):
+                    self.copy_html(os.path.join(src_dir, file), os.path.join(target_dir, file))
+                else:
+                    shutil.copy2(os.path.join(src_dir, file), os.path.join(target_dir, file))
+
+
+    def partial_html(self, src_dir, target_dir="", follow_dirs=False):
+        for file in os.listdir(src_dir):
             if os.path.isfile(file):
                 with open(file) as f:
                     self.replacements[file] = BeautifulSoup(f.read(), 'html.parser')
+
 
     def copy_html(self, source, dest):
         with open(source, 'r', encoding='utf-8') as src, open(dest, 'w', encoding='utf-8') as dst:
@@ -83,12 +94,11 @@ class Builder:
             else:
                 soup = BeautifulSoup(requests.get(file).text, 'html.parser')
                 self.replacements[file] = soup
-            # soup = BeautifulSoup(requests.get(file).text, 'html.parser')
-            # self.replacements[file] = soup
         else:
             soup = self.replacements[file]
 
         return copy.copy(soup)
+
 
     def clean_links(self, soup):
         try:
@@ -101,6 +111,16 @@ class Builder:
         for link in soup.findAll("a"):
             if link["href"].startswith(base_url):
                 link["href"] = link["href"][len(base_url):]
+
+
+    @staticmethod
+    def parse_build_order(row):
+        return {
+            "source_dir": row[0],
+            "target_dir": row[1],
+            "follow_dirs": row[2],
+            "enabled": row[3]
+        }
 
     #TODO(generate cards dynamically)
     #TODO(generate nav links)

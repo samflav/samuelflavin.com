@@ -1,0 +1,92 @@
+:root {
+    --zyn-red: #c4302b;
+    --zyn-orange: #ff5a36;
+    --zyn-bg: #1a0f0f;
+    --zyn-text: #fceee7;
+}
+
+body {
+    background-color: var(--zyn-bg);
+    color: var(--zyn-text);
+    font-family: 'JetBrains Mono', monospace;
+}
+
+.text-zyn {
+    color: var(--zyn-orange);
+}
+
+a, .link-indicator {
+    color: var(--zyn-orange);
+}
+a:hover {
+    color: #ffc4b4;
+}
+
+.z-card {
+    background: linear-gradient(135deg, #2e1515, #401a1a);
+    border: 1px solid rgba(255, 90, 54, 0.2);
+    transition: transform 0.25s ease, box-shadow 0.25s ease;
+}
+
+.z-card:hover {
+    transform: translateY(-6px);
+    box-shadow: 0 0 18px rgba(255, 90, 54, 0.4);
+}
+
+.btn-light {
+    background-color: #ffe8e1;
+    color: #8c2b1f;
+    border: none;
+}
+.btn-light:hover {
+    background-color: #ffd4c7;
+}
+
+
+/* Nav override — NOT sticky */
+.navbar {
+    background-color: #140b0b !important;
+    color: #fceee7;
+    box-shadow: 0 3px 10px rgba(255, 90, 54, 0.3);
+    position: relative; /* no sticky */
+    z-index: 999;
+}
+
+.navbar .nav-link,
+.navbar .navbar-brand {
+    color: #fceee7 !important;
+}
+
+.navbar .nav-link:hover,
+.navbar .navbar-brand:hover {
+    color: #ffa88f !important;
+}
+
+h1.glow-title {
+    font-size: 3rem;
+    text-align: center;
+    color: #ff5a36;
+    text-shadow: 0 0 10px #ff5a36, 0 0 30px #ff7e59;
+    margin-top: 2rem;
+    margin-bottom: 1.5rem;
+    text-transform: uppercase;
+    letter-spacing: 2px;
+}
+
+.about-text {
+    max-width: 750px;
+    margin: 0 auto;
+    font-size: 1.125rem;
+    line-height: 1.7;
+    color: #fceee7;
+    padding: 0 1rem;
+}
+
+.idol-img {
+    max-width: 500px;
+    width: 90%;
+    display: block;
+    margin: 2rem auto;
+    border-radius: 0.5rem;
+    box-shadow: 0 0 50px rgba(255, 90, 54, 0.3);
+}
