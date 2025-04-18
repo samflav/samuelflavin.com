@@ -1,0 +1,42 @@
+:root {
+    --zyn-red: #c4302b;
+    --zyn-orange: #ff5a36;
+    --zyn-bg: #1a0f0f;
+    --zyn-text: #fceee7;
+}
+
+body {
+    background-color: var(--zyn-bg);
+    color: var(--zyn-text);
+}
+
+.text-zyn {
+    color: var(--zyn-orange);
+}
+
+a, .link-indicator {
+    color: var(--zyn-orange);
+}
+a:hover {
+    color: #ffc4b4;
+}
+
+.z-card {
+    background: linear-gradient(135deg, #2e1515, #401a1a);
+    border: 1px solid rgba(255, 90, 54, 0.2);
+    transition: transform 0.25s ease, box-shadow 0.25s ease;
+}
+
+.z-card:hover {
+    transform: translateY(-6px);
+    box-shadow: 0 0 18px rgba(255, 90, 54, 0.4);
+}
+
+.btn-light {
+    background-color: #ffe8e1;
+    color: #8c2b1f;
+    border: none;
+}
+.btn-light:hover {
+    background-color: #ffd4c7;
+}
