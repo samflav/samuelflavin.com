@@ -5,6 +5,8 @@ import copy
 from bs4 import BeautifulSoup
 import requests
 
+from nav_builder import NavBuilder
+
 class Builder:
 
     base_site = ""
@@ -14,6 +16,8 @@ class Builder:
     handlers = {}
     replacements = {}
 
+    nav_builder = None
+
     def __init__(self, wd, base_site, build_order):
         self.base_site = base_site
 
@@ -21,6 +25,9 @@ class Builder:
         self.target = os.path.join(wd, 'target')
 
         self.build_order = build_order
+
+        #preload nav (It's a surprise tool that will help us later)
+        self.nav_builder = NavBuilder(BeautifulSoup(requests.get("https://assets.samuelflavin.com/html_part/nav.html").text, 'html.parser'))
 
         os.makedirs(self.target, exist_ok=True)
 
@@ -35,12 +42,14 @@ class Builder:
             if not build_target["enabled"]:
                 continue
 
+            self.nav_builder.rebase(build_target["source_dir"])
+
             if build_target["source_dir"] in self.handlers.keys():
                 self.handlers[build_target["source_dir"]](build_target["source_dir"], build_target["target_dir"], build_target["follow_dirs"])
             else:
                 self.default(build_target["source_dir"], build_target["target_dir"], build_target["follow_dirs"])
 
-
+    #TODO(recursion would be gooder for the nav)
     def default(self, src_dir, target_dir, follow_dirs):
         if follow_dirs:
             for root, dirs, files in os.walk(src_dir):
@@ -48,21 +57,29 @@ class Builder:
                 for directory in dirs:
                     os.makedirs(os.path.join(target_dir, directory), exist_ok=True)
 
-                for file in files:
-                    if file.endswith(".html"):
-                        self.copy_html(os.path.join(root, file), os.path.join(target_dir, str(rel_path), file))
-                    else:
-                        shutil.copy2(str(os.path.join(root, file)), str(os.path.join(target_dir, str(rel_path), file)))
+                self.handle_files(root, os.path.join(target_dir, str(rel_path)), files)
         else:
             os.makedirs(os.path.join(target_dir), exist_ok=True)
-            for file in os.listdir(src_dir):
-                if not os.path.isfile(os.path.join(src_dir, file)):
-                    continue
+            self.handle_files(src_dir, target_dir, os.listdir(src_dir))
 
-                if file.endswith(".html"):
-                    self.copy_html(os.path.join(src_dir, file), os.path.join(target_dir, file))
-                else:
-                    shutil.copy2(os.path.join(src_dir, file), os.path.join(target_dir, file))
+
+    def handle_files(self, src_dir, target_dir, files):
+        if ".navlinks" in files:
+            self.nav_builder.handle_nav(os.path.join(src_dir, ".navlinks"))
+            self.replacements["https://assets.samuelflavin.com/html_part/nav.html"] = self.nav_builder.nav
+            files.remove(".navlinks")
+        else:
+            self.nav_builder.find_current_nav(src_dir, True)
+            self.replacements["https://assets.samuelflavin.com/html_part/nav.html"] = self.nav_builder.nav
+
+        for file in files:
+            if not os.path.isfile(os.path.join(src_dir, file)):
+                continue
+
+            if file.endswith(".html"):
+                self.copy_html(os.path.join(src_dir, file), os.path.join(target_dir, file))
+            else:
+                shutil.copy2(str(os.path.join(src_dir, file)), str(os.path.join(target_dir, file)))
 
 
     def partial_html(self, src_dir, target_dir="", follow_dirs=False):
