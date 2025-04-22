@@ -10,7 +10,7 @@ BUILD = sys.argv[1] == 'True'
 DEPLOY = sys.argv[2] == 'True'
 
 sites_limit = None
-# sites_limit = ["./src/fonts/"]
+# sites_limit = ["./src/partial_html/"]
 
 #source dir / target dir / follow dirs / enabled
 BUILD_ORDER = [
@@ -27,7 +27,7 @@ DEPLOY_ORDER = [
     ("./target/pt/", "/var/www/pt/", True, True, None),
     ("./target/zynnamon/", "/var/www/cinnamon", True, True, None),
     ("./src/css/", "/var/www/assets/css/", True, False, None),
-    ("./src/fonts/", "/var/www/assets/fonts/", True, True, None)
+    ("./src/fonts/", "/var/www/assets/fonts/", True, False, None)
 ]
 
 
