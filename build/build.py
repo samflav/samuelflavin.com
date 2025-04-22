@@ -10,7 +10,7 @@ BUILD = sys.argv[1] == 'True'
 DEPLOY = sys.argv[2] == 'True'
 
 sites_limit = None
-sites_limit = ["./src/fonts/"]
+# sites_limit = ["./src/fonts/"]
 
 #source dir / target dir / follow dirs / enabled
 BUILD_ORDER = [
