@@ -25,7 +25,9 @@ DEPLOY_ORDER = [
     ("./src/partial_html/", "/var/www/assets/html_part/", True, True, None),
     ("./target/", "/var/www/home/", False, True, None),
     ("./target/pt/", "/var/www/pt/", True, True, None),
-    ("./target/zynnamon/", "/var/www/cinnamon", True, True, None)
+    ("./target/zynnamon/", "/var/www/cinnamon", True, True, None),
+    ("./src/css/", "/var/www/assets/css/", True, False, None),
+    ("./src/fonts/", "/var/www/assets/fonts/", True, False, None)
 ]
 
 

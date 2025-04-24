@@ -3,13 +3,12 @@ $.>literal-desktop
     <a class="nav-link dropdown-toggle" href="https://samuelflavin.com/sites.html" role="button" data-bs-toggle="dropdown" aria-expanded="false">Strength</a>
     <ul class="dropdown-menu">
         <li><a class="dropdown-item" href="https://pt.samuelflavin.com/strength/lower_body.html">Lower Body</a></li>
-        <li><a class="dropdown-item" href="https://pt.samuelflavin.com/strength/plate_workout.html">Plate 1</a></li>
-        <li><a class="dropdown-item" href="https://pt.samuelflavin.com/strength/plate_workout_2.html">Plate 2</a></li>
+        <li><a class="dropdown-item" href="https://pt.samuelflavin.com/strength/plate_workout.html">Plate Workout</a></li>
+        <li><a class="dropdown-item" href="https://pt.samuelflavin.com/strength/plate_workout_2.html">Plate Workout 2</a></li>
         <li><a class="dropdown-item" href="https://pt.samuelflavin.com/strength/pyramids.html">Pyramids</a></li>
         <li><a class="dropdown-item" href="https://pt.samuelflavin.com/strength/upper_body.html">Upper Body</a></li>
     </ul>
 </li>
-$.>literal-desktop
 <li class="nav-item dropdown d-none d-lg-block">
     <a class="nav-link dropdown-toggle" href="https://samuelflavin.com/sites.html" role="button" data-bs-toggle="dropdown" aria-expanded="false">Cardio</a>
     <ul class="dropdown-menu">
@@ -20,12 +19,11 @@ $.>literal-desktop
         <li><a class="dropdown-item" href="https://pt.samuelflavin.com/cardio/rowing_cardio.html">Rowing Cardio</a></li>
     </ul>
 </li>
-$.>literal-desktop
 <li class="nav-item dropdown d-none d-lg-block">
     <a class="nav-link dropdown-toggle" href="https://samuelflavin.com/sites.html" role="button" data-bs-toggle="dropdown" aria-expanded="false">Full Body</a>
     <ul class="dropdown-menu">
         <li><a class="dropdown-item" href="https://pt.samuelflavin.com/full_body/deck_of_doom.html">Deck of DOOM</a></li>
-        <li><a class="dropdown-item" href="https://pt.samuelflavin.com/full_body/hiit_workout.html">HIIT</a></li>
+        <li><a class="dropdown-item" href="https://pt.samuelflavin.com/full_body/hiit_workout.html">HIIT workout</a></li>
         <li><a class="dropdown-item" href="https://pt.samuelflavin.com/full_body/last_airman_up.html">Last Airman Up</a></li>
         <li><a class="dropdown-item" href="https://pt.samuelflavin.com/full_body/rowing_strength.html">Rowing Strength</a></li>
     </ul>
@@ -34,11 +32,9 @@ $.>literal-mobile
 <li class="nav-item">
     <a class="nav-link" href="https://pt.samuelflavin.com/strength/">Strength</a>
 </li>
-$.>literal-mobile
 <li class="nav-item">
     <a class="nav-link" href="https://pt.samuelflavin.com/cardio/">Cardio</a>
 </li>
-$.>literal-mobile
 <li class="nav-item">
     <a class="nav-link" href="https://pt.samuelflavin.com/full_body/">Full Body</a>
 </li>
