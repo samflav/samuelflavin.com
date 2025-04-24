@@ -42,35 +42,33 @@ class Builder:
             if not build_target["enabled"]:
                 continue
 
-            self.nav_builder.rebase(build_target["source_dir"])
-
             if build_target["source_dir"] in self.handlers.keys():
                 self.handlers[build_target["source_dir"]](build_target["source_dir"], build_target["target_dir"], build_target["follow_dirs"])
             else:
-                self.default(build_target["source_dir"], build_target["target_dir"], build_target["follow_dirs"])
+                self.default(build_target["source_dir"], build_target["target_dir"], build_target["follow_dirs"], [])
 
     #TODO(recursion would be gooder for the nav)
-    def default(self, src_dir, target_dir, follow_dirs):
+    #Nav changes like [[html of change, target (mobile or desktop or both)], ["<li>...</li>", "mobile"]]
+    def default(self, src_dir, target_dir, follow_dirs, nav_changes):
+        os.makedirs(os.path.join(target_dir), exist_ok=True)
+        self.handle_files(src_dir, target_dir, os.listdir(src_dir), nav_changes)
+        curr_cng_idx = len(nav_changes)
+
         if follow_dirs:
-            for root, dirs, files in os.walk(src_dir):
-                rel_path = os.path.relpath(root, src_dir)
-                for directory in dirs:
-                    os.makedirs(os.path.join(target_dir, directory), exist_ok=True)
-
-                self.handle_files(root, os.path.join(target_dir, str(rel_path)), files)
-        else:
-            os.makedirs(os.path.join(target_dir), exist_ok=True)
-            self.handle_files(src_dir, target_dir, os.listdir(src_dir))
+            for directory in os.listdir(src_dir):
+                if os.path.isdir(os.path.join(src_dir, directory)):
+                    nav_changes = nav_changes[:curr_cng_idx]
+                    self.default(os.path.join(src_dir, directory), os.path.join(target_dir, directory), follow_dirs, nav_changes)
 
 
-    def handle_files(self, src_dir, target_dir, files):
+
+
+    def handle_files(self, src_dir, target_dir, files, nav_changes):
         if ".navlinks" in files:
-            self.nav_builder.handle_nav(os.path.join(src_dir, ".navlinks"))
-            self.replacements["https://assets.samuelflavin.com/html_part/nav.html"] = self.nav_builder.nav
+            nav_changes.extend(self.nav_builder.get_changes_from_file(os.path.join(src_dir, ".navlinks")))
             files.remove(".navlinks")
-        else:
-            self.nav_builder.find_current_nav(src_dir, True)
-            self.replacements["https://assets.samuelflavin.com/html_part/nav.html"] = self.nav_builder.nav
+
+        self.nav_builder.apply_changes(nav_changes)
 
         for file in files:
             if not os.path.isfile(os.path.join(src_dir, file)):
@@ -105,6 +103,9 @@ class Builder:
 
 
     def get_replacement(self, file):
+        #update replacements with current nav
+        self.replacements["https://assets.samuelflavin.com/html_part/nav.html"] = self.nav_builder.nav
+
         if file.startswith("https://"):
             if file in self.replacements.keys():
                 soup = self.replacements[file]

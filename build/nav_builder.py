@@ -1,40 +1,27 @@
 from bs4 import BeautifulSoup
 import copy
-import os
-
 
 class NavBuilder:
     commands = {}
     base_nav = None
-    nav_stack = []
     nav = None
-    has_changes = False
+
 
     def __init__(self, clean_nav):
         self.commands = {
             "literal-both": self.literal_both,
             "literal-desktop": self.literal_desktop,
             "literal-mobile": self.literal_mobile
-            #TODO(more hehe)
+            #TODO(more hehe, list dir, etc)
         }
 
         self.base_nav = clean_nav
         self.nav = clean_nav
 
 
-    def rebase(self, source_dir):
-        self.nav_stack = []
-        self.has_changes = False
-        self.nav = self.base_nav
-        #XXX: sketch idk how this would interact with file names TODO(make path split method)
-        # self.nav_stack.append((os.path.normpath(source_dir).split(os.sep)[-1], self.base_nav))
-
-    def handle_nav(self, navlinks_file):
-        self.has_changes = True
-
-        bot_dir, nav_soup = self.find_current_nav(os.path.split(navlinks_file)[0])
-
-        with open(navlinks_file, 'r') as f:
+    def get_changes_from_file(self, file):
+        changes = []
+        with open(file, 'r') as f:
             while True:
                 line = f.readline()
                 if not line:
@@ -43,63 +30,41 @@ class NavBuilder:
                 if line.startswith("$.>"):
                     command = line[3:]
 
-                    self.nav = self.commands[command.strip()](f, copy.copy(nav_soup))
+                    changes.extend(self.commands[command.strip()](f))
 
-        self.nav_stack.append((bot_dir, self.nav))
+        return changes
 
-    def find_current_nav(self, src_dir, assign=False):
-        if not self.has_changes:
-            return None, None
 
-        # XXX: again, but this time in reverse. This assumes a file name TODO()
-        path = os.path.normpath(src_dir).split(os.sep)
-        bot_dir = path[-1]
+    def apply_changes(self, changes):
+        #naive approach for now, write all changes every time TODO(cache changes and only write if necessary, more 2 come)
+        self.nav = copy.copy(self.base_nav)
 
-        #NOT TODO(N^2 is for the coolest of coolios)
-        found = False
-        for directory in reversed(path):
-            if found:
-                break
+        for change in changes:
+            if change[1] == "both" or change[1] == "desktop":
+                self.nav.find(id="desktop-nav-entrypoint").insert_before(BeautifulSoup(change[0], 'html.parser'))
 
-            for idx, item in reversed(list(enumerate(self.nav_stack))):
-                if item[0] == directory:
-                    nav_soup = item[1]
-                    found = True
-                    self.nav_stack = self.nav_stack[:idx]
-                    break
-        else:
-            nav_soup = self.base_nav
+            if change[1] == "both" or change[1] == "mobile":
+                self.nav.find(id="mobile-nav-entrypoint").insert_before(BeautifulSoup(change[0], 'html.parser'))
 
-        self.nav = nav_soup if not assign else self.nav
-        return bot_dir, nav_soup
+
 
 
     #TODO(error handling low importance)
     @staticmethod
-    def literal_desktop(file_handle, nav_soup):
-        soup = NavBuilder.get_soup_from_literal(file_handle)
-
-        nav_soup.find(id="desktop-nav-entrypoint").insert_before(soup)
-        return nav_soup
-
-    @staticmethod
-    def literal_mobile(file_handle, nav_soup):
-        soup = NavBuilder.get_soup_from_literal(file_handle)
-
-        nav_soup.find(id="mobile-nav-entrypoint").insert_before(soup)
-        return nav_soup
-
-    @staticmethod
-    def literal_both(file_handle, nav_soup):
-        soup = NavBuilder.get_soup_from_literal(file_handle)
-
-        nav_soup.find(id="desktop-nav-entrypoint").insert_before(copy.copy(soup))
-        nav_soup.find(id="mobile-nav-entrypoint").insert_before(soup)
-        return nav_soup
+    def literal_desktop(file_handle):
+        return [[NavBuilder.get_html_from_literal(file_handle), "desktop"]]
 
 
     @staticmethod
-    def get_soup_from_literal(file_handle):
+    def literal_mobile(file_handle):
+        return[[NavBuilder.get_html_from_literal(file_handle), "mobile"]]
+
+    @staticmethod
+    def literal_both(file_handle):
+        return [[NavBuilder.get_html_from_literal(file_handle), "both"]]
+
+    @staticmethod
+    def get_html_from_literal(file_handle):
         html = ""
         while True:
             pos = file_handle.tell()
@@ -112,4 +77,4 @@ class NavBuilder:
             else:
                 html += line
 
-        return BeautifulSoup(html, 'html.parser')
+        return html
